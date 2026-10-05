@@ -58,4 +58,6 @@ coverage.xml
 # Local Environment & Secrets
 .env
 .env.local
+*.env
+config.env
 *.local

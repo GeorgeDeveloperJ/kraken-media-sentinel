@@ -7,6 +7,7 @@ from src.config import Config
 
 logger = logging.getLogger(__name__)
 
+
 class Notifier:
     def __init__(self, config: Config) -> None:
         self.config = config
@@ -53,12 +54,15 @@ class Notifier:
 
         try:
             data_bytes = dumps(payload).encode("utf-8")
-
             request = Request(url, data=data_bytes, method="POST")
-            request.add_header("Content-Type", "application/json; charset=utf-8")
+            request.add_header("Content-Type", "application/json")
+            request.add_header(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            )
 
             with urlopen(request, timeout=10) as response:
-                return response.getcode() == 200
+                return response.getcode() in (200, 204)
 
         except (HTTPError, URLError) as e:
             logger.error("Error while sending discord message: %s", e)

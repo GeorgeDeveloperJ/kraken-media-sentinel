@@ -5,11 +5,11 @@ from urllib.request import Request, urlopen
 
 from src.config import Config
 
+logger = logging.getLogger(__name__)
 
 class Notifier:
     def __init__(self, config: Config) -> None:
         self.config = config
-        self.logger = logging.getLogger("Notifier")
 
     def send_telegram(self, message: str) -> bool:
         """Sends HTML formatted message to Telegram if credentials exist."""
@@ -36,7 +36,7 @@ class Notifier:
                 return response.getcode() == 200
 
         except (HTTPError, URLError) as e:
-            self.logger.error("Error while sending telegram message: %s", e)
+            logger.error("Error while sending telegram message: %s", e)
             return False
 
     def send_discord(self, title: str, description: str, color: int) -> bool:
@@ -61,7 +61,7 @@ class Notifier:
                 return response.getcode() == 200
 
         except (HTTPError, URLError) as e:
-            self.logger.error("Error while sending telegram message: %s", e)
+            logger.error("Error while sending discord message: %s", e)
             return False
 
     def notify_critical(

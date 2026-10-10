@@ -1,0 +1,23 @@
+[Unit]
+Description=Kraken Media Sentinel - USB Media Storage Remount & Health Daemon
+After=network.target local-fs.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/kraken-lab/scripts/media-monitor
+ExecStart=/usr/bin/python3 /opt/kraken-lab/scripts/media-monitor/src/monitor.py --daemon
+Restart=always
+RestartSec=10
+
+# Load environment configuration (the '-' tells systemd not to fail if one is missing)
+EnvironmentFile=-/etc/kraken-media-manager/config.env
+EnvironmentFile=-/opt/kraken-lab/scripts/media-monitor/config.env
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

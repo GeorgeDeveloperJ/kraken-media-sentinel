@@ -85,24 +85,45 @@ DISCORD_WEBHOOK_URL=
 
 ---
 
-## Verification & Testing
+## Verification & CLI Testing
 
-Run the automated unit test suite to verify configuration loading and validation invariants:
+Run the automated unit test suite to verify configuration loading, health checks, notifiers, and recovery invariants:
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-<!-- HUMAN VERIFICATION REQUIRED: Add integration test command once CLI flags (--check, --remount, --test-notifications) are implemented -->
+Execute one-off CLI commands:
+
+```bash
+# Perform a health check diagnosis (exit code 0 = healthy, 1 = degraded)
+python3 src/monitor.py --check
+
+# Test Telegram and Discord notifications
+python3 src/monitor.py --test-notifications
+
+# Manually trigger a remount recovery sequence
+sudo python3 src/monitor.py --remount
+```
 
 ---
 
-## Systemd Installation
+## Installation & Deployment
 
-1. Copy the service unit to the systemd directory:
+### Quick Install (Automated)
+
+Run the included installation script to set up directories, configuration template, systemd unit, and global CLI symlink:
+
+```bash
+sudo ./install.sh
+```
+
+### Manual Systemd Installation
+
+1. Copy the service unit to systemd:
 
    ```bash
-   sudo cp systemd/kraken-media-monitor.service /etc/systemd/system/
+   sudo cp systemd/kraken-media-sentinel.service /etc/systemd/system/
    ```
 
 2. Secure the configuration file in `/etc`:
@@ -117,20 +138,18 @@ python3 -m unittest discover -s tests -v
 
    ```bash
    sudo systemctl daemon-reload
-   sudo systemctl enable --now kraken-media-monitor.service
+   sudo systemctl enable --now kraken-media-sentinel.service
    ```
 
 4. Inspect live status and logs:
 
    ```bash
-   sudo systemctl status kraken-media-monitor.service
-   sudo journalctl -u kraken-media-monitor.service -f
+   sudo systemctl status kraken-media-sentinel.service
+   sudo journalctl -u kraken-media-sentinel.service -f
    ```
 
 ---
 
 ## License
-
-<!-- HUMAN VERIFICATION REQUIRED: Specify project license (e.g. MIT, Apache 2.0, or Proprietary) -->
 
 This project is licensed under the MIT License.
